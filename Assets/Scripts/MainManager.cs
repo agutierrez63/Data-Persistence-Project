@@ -18,10 +18,18 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
+    public static string playerNameStr;
+    public Text currentPlayerName;
+    public Text HSPlayerNameText;
+    public Text HighScoreText;
     
     // Start is called before the first frame update
     void Start()
     {
+        currentPlayerName.text = PlayerPrefs.GetString("CurrentName");
+        HighScoreText.text = PlayerPrefs.GetInt("HighScore", 0).ToString();
+        HSPlayerNameText.text = PlayerPrefs.GetString("name", "");
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -57,7 +65,7 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
             }
         }
     }
@@ -72,5 +80,15 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        
+        ScoreText.text = m_Points.ToString();
+
+        if (m_Points > PlayerPrefs.GetInt("HighScore", 0))
+        {
+            PlayerPrefs.SetInt("HighScore", m_Points);
+            HighScoreText.text = m_Points.ToString();
+            PlayerPrefs.SetString("name", playerNameStr);
+        }
+
     }
 }
